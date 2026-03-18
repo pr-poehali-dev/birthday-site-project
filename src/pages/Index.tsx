@@ -390,13 +390,6 @@ function PhotoSection() {
       className="py-24 px-4 relative overflow-hidden"
       style={{ background: "linear-gradient(160deg,#FAF0FF 0%,#FFF0F8 50%,#F0F8FF 100%)" }}
     >
-      {/* Animated road */}
-      <div className="absolute left-0 right-0 overflow-hidden pointer-events-none select-none" style={{ bottom: 60, height: 40 }}>
-        <div style={{ width: "100%", height: 2, background: "repeating-linear-gradient(90deg,#D4B0FF 0px,#D4B0FF 20px,transparent 20px,transparent 40px)", position: "absolute", top: "50%" }} />
-        <div className="absolute text-2xl" style={{ animation: "carDrive 14s linear infinite", bottom: 0 }}>🛵</div>
-        <div className="absolute text-2xl" style={{ animation: "carDrive 22s 4s linear infinite", bottom: 0 }}>🚗</div>
-      </div>
-
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-14">
           <p className="font-nunito text-sm font-bold tracking-widest uppercase mb-3" style={{ color: "#B57BFF" }}>
@@ -437,6 +430,54 @@ function PhotoSection() {
   );
 }
 
+// ─── Boy Avatar Upload ────────────────────────────────────────
+function BoyAvatar({ avatar, accentColor }: { avatar: string; accentColor: string }) {
+  const [imgSrc, setImgSrc] = useState<string | null>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleFile = (file: File) => {
+    if (!file.type.startsWith("image/")) return;
+    const reader = new FileReader();
+    reader.onload = (e) => setImgSrc(e.target?.result as string);
+    reader.readAsDataURL(file);
+  };
+
+  return (
+    <div
+      className="relative cursor-pointer group flex-shrink-0"
+      style={{ width: 56, height: 56 }}
+      onClick={(e) => { e.stopPropagation(); inputRef.current?.click(); }}
+    >
+      <input ref={inputRef} type="file" accept="image/*" className="hidden"
+        onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); }} />
+      <div
+        className="w-full h-full rounded-full overflow-hidden flex items-center justify-center transition-all duration-200"
+        style={{
+          background: imgSrc ? "transparent" : "rgba(255,255,255,0.12)",
+          border: `2px solid ${accentColor}60`,
+          boxShadow: `0 0 0 2px rgba(255,255,255,0.15)`,
+        }}
+      >
+        {imgSrc
+          ? <img src={imgSrc} alt="" className="w-full h-full object-cover" />
+          : <span className="text-2xl select-none">{avatar}</span>
+        }
+        <div className="absolute inset-0 rounded-full bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+          <Icon name="Camera" size={14} className="text-white" />
+        </div>
+      </div>
+      {!imgSrc && (
+        <div
+          className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center shadow-md"
+          style={{ background: accentColor }}
+        >
+          <Icon name="Plus" size={10} className="text-white" />
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── SECTION 3: LOVE + BOYS ──────────────────────────────────
 function BoyCard({ boy }: { boy: typeof BOOK_BOYS[0] }) {
   const [open, setOpen] = useState(false);
@@ -453,7 +494,7 @@ function BoyCard({ boy }: { boy: typeof BOOK_BOYS[0] }) {
         }}
       >
         <div className="flex items-center gap-3 mb-1">
-          <span className="text-3xl">{boy.avatar}</span>
+          <BoyAvatar avatar={boy.avatar} accentColor={boy.color.accent} />
           <div className="flex-1">
             <p className="font-pacifico text-base" style={{ color: open ? boy.color.accent : "white" }}>{boy.name}</p>
             <p className="font-nunito text-xs" style={{ color: open ? boy.color.text + "80" : "rgba(255,255,255,0.4)" }}>{boy.role}</p>
@@ -532,10 +573,52 @@ function LoveSection() {
   );
 }
 
+// ─── Background Photo Upload ──────────────────────────────────
+function BgPhotoUpload({
+  onImage,
+  imgSrc,
+  hint,
+}: {
+  onImage: (src: string) => void;
+  imgSrc: string | null;
+  hint: string;
+}) {
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleFile = (file: File) => {
+    if (!file.type.startsWith("image/")) return;
+    const reader = new FileReader();
+    reader.onload = (e) => onImage(e.target?.result as string);
+    reader.readAsDataURL(file);
+  };
+
+  return (
+    <button
+      onClick={() => inputRef.current?.click()}
+      className="absolute z-20 flex items-center gap-2 rounded-full px-4 py-2 shadow-xl transition-all hover:scale-105 active:scale-95"
+      style={{
+        top: 16,
+        left: 16,
+        background: "rgba(255,255,255,0.18)",
+        backdropFilter: "blur(12px)",
+        border: "1.5px solid rgba(255,255,255,0.45)",
+        color: "white",
+      }}
+      title={hint}
+    >
+      <input ref={inputRef} type="file" accept="image/*" className="hidden"
+        onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); }} />
+      <Icon name={imgSrc ? "ImagePlus" : "Camera"} size={15} className="text-white" />
+      <span className="font-nunito text-xs font-semibold">{imgSrc ? "Сменить фото" : hint}</span>
+    </button>
+  );
+}
+
 // ─── SECTION 4: SEA ───────────────────────────────────────────
 function SeaSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [offset, setOffset] = useState(0);
+  const [bgImg, setBgImg] = useState<string | null>(null);
 
   useEffect(() => {
     const onScroll = () => {
@@ -549,44 +632,43 @@ function SeaSection() {
 
   return (
     <section ref={sectionRef} className="relative overflow-hidden"
-      style={{ background: "linear-gradient(180deg,#0A4A7A 0%,#0B6FAD 35%,#1A9EDD 65%,#4EC8FF 100%)", minHeight: "70vh" }}>
+      style={{ minHeight: "70vh" }}>
 
-      {/* Parallax clouds */}
-      <div className="absolute inset-0 pointer-events-none" style={{ transform: `translateY(${offset}px)` }}>
-        {[{ x: 5, y: 8, w: 60 }, { x: 22, y: 15, w: 90 }, { x: 45, y: 5, w: 110 }, { x: 65, y: 12, w: 75 }, { x: 82, y: 8, w: 95 }].map((c, i) => (
-          <div key={i} className="absolute rounded-full opacity-90" style={{
-            left: `${c.x}%`, top: `${c.y}%`,
-            width: c.w, height: c.w * 0.55,
-            background: "white", filter: "blur(2px)",
-            animation: `float ${5 + i}s ${i * 0.5}s ease-in-out infinite`,
-          }} />
-        ))}
-      </div>
+      {/* Background layer */}
+      <div
+        className="absolute inset-0"
+        style={{
+          background: bgImg
+            ? `url(${bgImg}) center/cover no-repeat`
+            : "linear-gradient(180deg,#0A4A7A 0%,#0B6FAD 35%,#1A9EDD 65%,#4EC8FF 100%)",
+        }}
+      />
+      {/* Overlay for readability */}
+      <div className="absolute inset-0" style={{ background: "rgba(10,30,60,0.45)" }} />
 
-      {/* Sun */}
-      <div className="absolute pointer-events-none rounded-full"
-        style={{ width: 80, height: 80, background: "radial-gradient(circle,#FFE566,#FFB347)", top: "8%", right: "12%",
-          boxShadow: "0 0 40px #FFD700,0 0 80px rgba(255,183,71,0.4)", animation: "float 6s ease-in-out infinite" }} />
+      {/* Upload button */}
+      <BgPhotoUpload onImage={setBgImg} imgSrc={bgImg} hint="Добавить фото на фон" />
 
-      {/* Jeep */}
-      <div className="absolute pointer-events-none select-none"
-        style={{ bottom: "28%", fontSize: "clamp(1.8rem,4vw,3rem)", animation: "carDrive 18s linear infinite", whiteSpace: "nowrap" }}>
-        🚙💨&nbsp;🌺🎁🌸🎊
-      </div>
+      {/* Parallax clouds — only when no custom photo */}
+      {!bgImg && (
+        <div className="absolute inset-0 pointer-events-none" style={{ transform: `translateY(${offset}px)` }}>
+          {[{ x: 5, y: 8, w: 60 }, { x: 22, y: 15, w: 90 }, { x: 45, y: 5, w: 110 }, { x: 65, y: 12, w: 75 }, { x: 82, y: 8, w: 95 }].map((c, i) => (
+            <div key={i} className="absolute rounded-full opacity-90" style={{
+              left: `${c.x}%`, top: `${c.y}%`,
+              width: c.w, height: c.w * 0.55,
+              background: "white", filter: "blur(2px)",
+              animation: `float ${5 + i}s ${i * 0.5}s ease-in-out infinite`,
+            }} />
+          ))}
+        </div>
+      )}
 
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center justify-center text-center px-4 py-32">
-        <div className="text-6xl mb-6" style={{ animation: "float 3s ease-in-out infinite" }}>🌊</div>
         <h2 className="font-pacifico text-4xl md:text-6xl text-white mb-6 drop-shadow-lg">Море зовёт тебя!</h2>
-        <p className="font-nunito text-lg md:text-xl text-white/85 max-w-xl leading-relaxed font-semibold mb-8">
-          Роскошный джип уже везёт подарки, цветы и все твои мечты прямо к берегу.
-          В 18 горизонт — не конец пути, а его начало.
+        <p className="font-nunito text-lg md:text-xl text-white/90 max-w-xl leading-relaxed font-semibold">
+          В 18 горизонт — не конец пути, а его начало. Всё лучшее ждёт впереди.
         </p>
-        <div className="flex gap-6 text-4xl select-none">
-          {["🐚", "🦀", "🌺", "🐬", "⭐", "🌊"].map((e, i) => (
-            <span key={i} style={{ animation: `float ${2.5 + i * 0.25}s ${i * 0.15}s ease-in-out infinite` }}>{e}</span>
-          ))}
-        </div>
       </div>
 
       <div className="absolute bottom-0 left-0 right-0" style={{ lineHeight: 0 }}>
@@ -603,6 +685,7 @@ function TreasureMapSection() {
   const [activePlace, setActivePlace] = useState<number | null>(null);
   const [chestOpen, setChestOpen] = useState(false);
   const [showFinal, setShowFinal] = useState(false);
+  const [mapBgImg, setMapBgImg] = useState<string | null>(null);
 
   const openChest = () => {
     if (chestOpen) return;
@@ -629,23 +712,35 @@ function TreasureMapSection() {
         {/* Map */}
         <div className="relative rounded-3xl overflow-hidden mb-8"
           style={{
-            background: "linear-gradient(140deg,#FFF6E0 0%,#FFECB3 40%,#FFE082 70%,#FFD54F 100%)",
             border: "4px solid #C8960C",
             minHeight: 420,
             boxShadow: "0 20px 60px rgba(200,150,12,0.2),inset 0 1px 0 rgba(255,255,255,0.6)",
           }}
         >
-          <div className="absolute inset-0 opacity-10 pointer-events-none"
-            style={{ backgroundImage: "radial-gradient(circle at 1px 1px,#8B6914 1px,transparent 0)", backgroundSize: "25px 25px" }} />
+          {/* Background — custom photo or parchment gradient */}
+          <div className="absolute inset-0"
+            style={{
+              background: mapBgImg
+                ? `url(${mapBgImg}) center/cover no-repeat`
+                : "linear-gradient(140deg,#FFF6E0 0%,#FFECB3 40%,#FFE082 70%,#FFD54F 100%)",
+            }}
+          />
+          {/* Overlay */}
+          <div className="absolute inset-0"
+            style={{ background: mapBgImg ? "rgba(255,240,180,0.55)" : "transparent" }} />
 
-          <div className="absolute top-3 left-3 text-2xl opacity-40 rotate-[-15deg]">🌿</div>
-          <div className="absolute top-3 right-3 text-2xl opacity-40 rotate-[15deg]">🌿</div>
-          <div className="absolute bottom-3 left-3 text-xl opacity-30 rotate-[10deg]">🌿</div>
-          <div className="absolute bottom-3 right-3 text-xl opacity-30 rotate-[-10deg]">🌿</div>
+          {/* Parchment texture dots — only without photo */}
+          {!mapBgImg && (
+            <div className="absolute inset-0 opacity-10 pointer-events-none"
+              style={{ backgroundImage: "radial-gradient(circle at 1px 1px,#8B6914 1px,transparent 0)", backgroundSize: "25px 25px" }} />
+          )}
+
+          {/* Upload button for map background */}
+          <BgPhotoUpload onImage={setMapBgImg} imgSrc={mapBgImg} hint="Добавить фото на карту" />
 
           <div className="absolute top-5 left-1/2 -translate-x-1/2 z-10 text-center">
             <span className="font-caveat text-xl font-bold px-5 py-1.5 rounded-full"
-              style={{ background: "rgba(139,105,20,0.2)", color: "#5D3A00", border: "1px solid rgba(139,105,20,0.3)" }}>
+              style={{ background: "rgba(139,105,20,0.25)", color: "#5D3A00", border: "1px solid rgba(139,105,20,0.35)" }}>
               ✦ Карта Приключений ✦
             </span>
           </div>
@@ -657,7 +752,7 @@ function TreasureMapSection() {
               "M 76% 64% Q 52% 82% 18% 68%",
               "M 18% 68% Q 8% 48% 14% 28%",
             ].map((d, i) => (
-              <path key={i} d={d} stroke="#8B6914" strokeWidth="1.5" strokeDasharray="10,7" fill="none" opacity="0.5" />
+              <path key={i} d={d} stroke="#8B6914" strokeWidth="1.5" strokeDasharray="10,7" fill="none" opacity="0.6" />
             ))}
           </svg>
 
@@ -703,9 +798,6 @@ function TreasureMapSection() {
               <span className="font-caveat text-xs font-bold mt-1" style={{ color: "#5D3A00" }}>Нажми!</span>
             )}
           </button>
-
-          <div className="absolute bottom-0 left-0 right-0 h-14 opacity-40"
-            style={{ background: "linear-gradient(0deg,#3B9EDD,transparent)" }} />
         </div>
 
         {showFinal && (
