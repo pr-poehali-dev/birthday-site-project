@@ -5,88 +5,43 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 320 30% 20%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 320 30% 20%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 320 30% 20%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 330 80% 65%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 270 60% 75%;
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 320 20% 96%;
+    --muted-foreground: 320 15% 50%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 45 100% 70%;
+    --accent-foreground: 320 30% 20%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 320 20% 88%;
+    --input: 320 20% 88%;
+    --ring: 330 80% 65%;
 
-    --radius: 0.5rem;
+    --radius: 1rem;
 
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    /* Party colors */
+    --pink: #ff6eb4;
+    --lavender: #b57bff;
+    --peach: #ffb347;
+    --mint: #7fffb5;
+    --sky: #7ec8ff;
+    --gold: #ffd700;
+    --coral: #ff7f7f;
   }
 }
 
@@ -97,5 +52,251 @@
 
   body {
     @apply bg-background text-foreground;
+    font-family: "Nunito", sans-serif;
+    overflow-x: hidden;
   }
+}
+
+/* Confetti particle */
+@keyframes confettiFall {
+  0% {
+    transform: translateY(-100px) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(110vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+@keyframes heartFloat {
+  0% {
+    transform: translateY(0) scale(1) rotate(-10deg);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-40px) scale(1.2) rotate(10deg);
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(-80px) scale(0.8) rotate(-5deg);
+    opacity: 0;
+  }
+}
+
+@keyframes balloonFloat {
+  0% {
+    transform: translateY(100vh) rotate(-5deg);
+  }
+  100% {
+    transform: translateY(-120vh) rotate(5deg);
+  }
+}
+
+@keyframes pulse18 {
+  0%,
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 20px rgba(255, 110, 180, 0.6));
+  }
+  50% {
+    transform: scale(1.05);
+    filter: drop-shadow(0 0 40px rgba(255, 110, 180, 0.9));
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
+}
+
+@keyframes wiggle {
+  0%,
+  100% {
+    transform: rotate(-3deg);
+  }
+  50% {
+    transform: rotate(3deg);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes sparkle {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1) rotate(180deg);
+  }
+}
+
+@keyframes neonPulse {
+  0%,
+  100% {
+    text-shadow:
+      0 0 10px #ff6eb4,
+      0 0 20px #ff6eb4,
+      0 0 40px #ff6eb4;
+  }
+  50% {
+    text-shadow:
+      0 0 20px #ff6eb4,
+      0 0 40px #ff6eb4,
+      0 0 80px #ff6eb4,
+      0 0 120px #ff6eb4;
+  }
+}
+
+@keyframes waveAnim {
+  0% {
+    d: path(
+      "M0,50 Q200,20 400,50 Q600,80 800,50 Q1000,20 1200,50 L1200,100 L0,100 Z"
+    );
+  }
+  50% {
+    d: path(
+      "M0,50 Q200,80 400,50 Q600,20 800,50 Q1000,80 1200,50 L1200,100 L0,100 Z"
+    );
+  }
+  100% {
+    d: path(
+      "M0,50 Q200,20 400,50 Q600,80 800,50 Q1000,20 1200,50 L1200,100 L0,100 Z"
+    );
+  }
+}
+
+@keyframes carDrive {
+  0% {
+    transform: translateX(-100px);
+  }
+  100% {
+    transform: translateX(calc(100vw + 100px));
+  }
+}
+
+@keyframes mapReveal {
+  from {
+    opacity: 0;
+    transform: scale(0.8) rotate(-5deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes treasureShake {
+  0%,
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
+  25% {
+    transform: rotate(-5deg) scale(1.05);
+  }
+  75% {
+    transform: rotate(5deg) scale(1.05);
+  }
+}
+
+.animate-pulse18 {
+  animation: pulse18 2s ease-in-out infinite;
+}
+.animate-heart-float {
+  animation: heartFloat 2s ease-out forwards;
+}
+.animate-balloon {
+  animation: balloonFloat linear infinite;
+}
+.animate-wiggle {
+  animation: wiggle 2s ease-in-out infinite;
+}
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+.animate-neon {
+  animation: neonPulse 2s ease-in-out infinite;
+}
+.animate-treasure {
+  animation: treasureShake 0.5s ease-in-out infinite;
+}
+.animate-map-reveal {
+  animation: mapReveal 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.shimmer-text {
+  background: linear-gradient(
+    90deg,
+    #ff6eb4,
+    #b57bff,
+    #ffb347,
+    #7ec8ff,
+    #ff6eb4
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 3s linear infinite;
+}
+
+.rainbow-border {
+  border: 3px solid transparent;
+  background:
+    linear-gradient(white, white) padding-box,
+    linear-gradient(45deg, #ff6eb4, #b57bff, #7ec8ff, #7fffb5, #ffb347)
+      border-box;
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+}
+
+.polaroid {
+  background: white;
+  padding: 12px 12px 40px 12px;
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.12),
+    0 1px 8px rgba(0, 0, 0, 0.08);
+}
+
+.party-gradient {
+  background: linear-gradient(
+    135deg,
+    #ffe5f0 0%,
+    #f0e5ff 25%,
+    #e5f0ff 50%,
+    #e5fff0 75%,
+    #fffde5 100%
+  );
+}
+
+.section-wave {
+  position: relative;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-visibility: hidden;
 }
